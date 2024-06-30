@@ -1,4 +1,4 @@
-package logger
+package github.com/fruitgum/logger
 
 import (
 	"fmt"
