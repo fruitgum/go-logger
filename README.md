@@ -21,3 +21,4 @@ func main() {
 
 }
 ```
+Thanks Fatih for their [color lib](https://github.com/fatih/color)
