@@ -20,6 +20,12 @@ func Debug(format string, v ...interface{}) {
 	debugLogger.Println(fmt.Sprintf("%s %s", color.MagentaString("[DEBUG]"), message))
 }
 
+
+func DebugOnCall(format string, v ...interface{}, debug bool) {
+	message := fmt.Sprintf(format, v...)
+	debugLogger.Println(fmt.Sprintf("%s %s", color.MagentaString("[DEBUG]"), message))
+}
+
 func Info(format string, v ...interface{}) {
 	message := fmt.Sprintf(format, v...)
 	infoLogger.Println(fmt.Sprintf("%s %s", color.CyanString("[INFO]"), message))
