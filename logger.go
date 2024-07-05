@@ -93,7 +93,7 @@ func System(format string, v ...interface{}) {
 func Fatal(format string, v ...interface{}) {
 	if LogLevelInt > -1 {
 		message := fmt.Sprintf(format, v...)
-		logPrint.Println(fmt.Sprintf("%s %s", color.RedString("[ERROR]"), message))
+		logPrint.Println(fmt.Sprintf("%s %s", color.RedString("[FATAL]"), message))
 	}
 	os.Exit(1)
 }
