@@ -5,14 +5,15 @@ import (
 	"github.com/fatih/color"
 	"log"
 	"os"
+	"strings"
 )
 
 var logLevelMap = map[string]int{
 	"debug":   4,
 	"info":    3,
 	"warn":    2,
-	"fatal":   1,
 	"error":   1,
+	"fatal":   0,
 	"minimal": 0,
 	"none":    -1,
 }
@@ -22,7 +23,18 @@ var (
 	logPrint    = log.New(os.Stdout, "", log.Ldate|log.Ltime)
 )
 
+// SetLogLevel accepts one of the following strings:
+// debug
+// info
+// warn
+// error
+// minimal
+// none
+// and sets log level according to given parameter
+// Returns given parameter sting
+// logLevel default value is info
 func SetLogLevel(logLevel string) string {
+	logLevel = strings.ToLower(logLevel)
 	if level, exists := logLevelMap[logLevel]; exists {
 		LogLevelInt = level
 		return logLevel
@@ -36,7 +48,8 @@ func SetLogLevel(logLevel string) string {
 
 func HelpUsage() string {
 	loggerUsage :=
-		"Available levels:\n" +
+		"Case-insensitive\n" +
+			"Available levels:\n" +
 			"debug\n" +
 			"info\n" +
 			"warn\n" +
@@ -46,6 +59,8 @@ func HelpUsage() string {
 	return loggerUsage
 }
 
+// Success Printing message with format 01/01/1970 00:00:00 [OK] string
+// Suppressing if log level set to none or minimal
 func Success(format string, v ...interface{}) {
 	if LogLevelInt >= 0 {
 		message := fmt.Sprintf(format, v...)
@@ -53,6 +68,8 @@ func Success(format string, v ...interface{}) {
 	}
 }
 
+// System Printing message with format 01/01/1970 00:00:00 [SYS] string
+// Suppressing if log level set to none or minimal
 func System(format string, v ...interface{}) {
 	if LogLevelInt >= 0 {
 		message := fmt.Sprintf(format, v...)
@@ -60,6 +77,9 @@ func System(format string, v ...interface{}) {
 	}
 }
 
+// Fatal Printing message with format 01/01/1970 00:00:00 [FATAL] string and terminates process
+// Suppressing if log level set to none
+// Will terminate process even if its output is suppressed
 func Fatal(format string, v ...interface{}) {
 	if LogLevelInt > -1 {
 		message := fmt.Sprintf(format, v...)
@@ -68,6 +88,8 @@ func Fatal(format string, v ...interface{}) {
 	os.Exit(1)
 }
 
+// Error Printing message with format 01/01/1970 00:00:00 [ERROR] string but not terminates process
+// Suppressing if log level set to minimal or none
 func Error(format string, v ...interface{}) {
 	if LogLevelInt > 0 {
 		message := fmt.Sprintf(format, v...)
@@ -75,6 +97,8 @@ func Error(format string, v ...interface{}) {
 	}
 }
 
+// Warn Printing message with format 01/01/1970 00:00:00 [WARN] string
+// Suppressing if log level set to error, minimal or none
 func Warn(format string, v ...interface{}) {
 	if LogLevelInt > 1 {
 		message := fmt.Sprintf(format, v...)
@@ -82,6 +106,8 @@ func Warn(format string, v ...interface{}) {
 	}
 }
 
+// Info Printing message with format 01/01/1970 00:00:00 [INFO] string but not terminates process
+// Suppressing if log level set to warn, error, minimal or none
 func Info(format string, v ...interface{}) {
 	if LogLevelInt > 2 {
 		message := fmt.Sprintf(format, v...)
@@ -89,6 +115,8 @@ func Info(format string, v ...interface{}) {
 	}
 }
 
+// Debug Printing message with format 01/01/1970 00:00:00 [DEBUG] string but not terminates process
+// Suppressing if log level is not set to debug
 func Debug(format string, v ...interface{}) {
 	if LogLevelInt > 3 {
 		message := fmt.Sprintf(format, v...)
