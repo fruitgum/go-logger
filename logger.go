@@ -40,7 +40,7 @@ func HelpUsage() string {
 			"debug\n" +
 			"info\n" +
 			"warn\n" +
-			"fatal/error\n" +
+			"error\n" +
 			"minimal\n" +
 			"none"
 	return loggerUsage
@@ -61,14 +61,17 @@ func System(format string, v ...interface{}) {
 }
 
 func Fatal(format string, v ...interface{}) {
-	Error(format, v)
+	if LogLevelInt > -1 {
+		message := fmt.Sprintf(format, v...)
+		logPrint.Println(fmt.Sprintf("%s %s", color.RedString("[ERROR]"), message))
+	}
+	os.Exit(1)
 }
 
 func Error(format string, v ...interface{}) {
 	if LogLevelInt > 0 {
 		message := fmt.Sprintf(format, v...)
 		logPrint.Println(fmt.Sprintf("%s %s", color.RedString("[ERROR]"), message))
-		os.Exit(1)
 	}
 }
 

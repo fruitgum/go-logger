@@ -19,6 +19,7 @@ func main() {
     logger.Success("This is Success message") //Green
     logger.Warn("This is Warn message") //Yellow
     logger.Error("This is Error message") //Red
+    logger.Fatal("This is Fatal message") //Red, terminates process
     
 
 }
@@ -59,6 +60,8 @@ func main() {
 * `info` - will suppress debug messages
 * `warn` - will suppress info and debug messages
 * `fatal` or `error` - will suppress info, warn and debug messages
-* `minimal` - will suppress all messages except System and Success 
-* `none` - will suppress everything 
+* `minimal` - will suppress all messages except System, Success and Fatal 
+* `none` - will suppress everything
 
+> [!IMPORTANT]
+> `logger.Fatal` level will terminate process even if its output is suppressed  
