@@ -9,13 +9,12 @@ import (
 )
 
 var logLevelMap = map[string]int{
-	"debug":   4,
-	"info":    3,
-	"warn":    2,
-	"error":   1,
-	"fatal":   0,
-	"minimal": 0,
-	"none":    -1,
+	"debug": 4,
+	"info":  3,
+	"warn":  2,
+	"error": 1,
+	"fatal": 0,
+	"none":  -1,
 }
 
 var (
@@ -28,7 +27,7 @@ var (
 // info
 // warn
 // error
-// minimal
+// fatal
 // none
 // and sets log level according to given parameter
 // Returns given parameter sting
@@ -47,20 +46,19 @@ func SetLogLevel(logLevel string) string {
 }
 
 func HelpUsage() string {
-	loggerUsage :=
-		"Case-insensitive\n" +
-			"Available levels:\n" +
-			"debug\n" +
-			"info\n" +
-			"warn\n" +
-			"error\n" +
-			"minimal\n" +
-			"none"
+	loggerUsage := "Case-insensitive\n" +
+		"Available levels:\n" +
+		"debug\n" +
+		"info\n" +
+		"warn\n" +
+		"error\n" +
+		"fatal\n" +
+		"none"
 	return loggerUsage
 }
 
 // Success Printing message with format 01/01/1970 00:00:00 [OK] string
-// Suppressing if log level set to none or minimal
+// Suppressing if log level set to none or fatal
 func Success(format string, v ...interface{}) {
 	if LogLevelInt >= 0 {
 		message := fmt.Sprintf(format, v...)
@@ -69,7 +67,7 @@ func Success(format string, v ...interface{}) {
 }
 
 // System Printing message with format 01/01/1970 00:00:00 [SYS] string
-// Suppressing if log level set to none or minimal
+// Suppressing if log level set to none or fatal
 func System(format string, v ...interface{}) {
 	if LogLevelInt >= 0 {
 		message := fmt.Sprintf(format, v...)
@@ -89,7 +87,7 @@ func Fatal(format string, v ...interface{}) {
 }
 
 // Error Printing message with format 01/01/1970 00:00:00 [ERROR] string but not terminates process
-// Suppressing if log level set to minimal or none
+// Suppressing if log level set to fatal or none
 func Error(format string, v ...interface{}) {
 	if LogLevelInt > 0 {
 		message := fmt.Sprintf(format, v...)
@@ -98,7 +96,7 @@ func Error(format string, v ...interface{}) {
 }
 
 // Warn Printing message with format 01/01/1970 00:00:00 [WARN] string
-// Suppressing if log level set to error, minimal or none
+// Suppressing if log level set to error, fatal or none
 func Warn(format string, v ...interface{}) {
 	if LogLevelInt > 1 {
 		message := fmt.Sprintf(format, v...)
@@ -107,7 +105,7 @@ func Warn(format string, v ...interface{}) {
 }
 
 // Info Printing message with format 01/01/1970 00:00:00 [INFO] string but not terminates process
-// Suppressing if log level set to warn, error, minimal or none
+// Suppressing if log level set to warn, error, fatal or none
 func Info(format string, v ...interface{}) {
 	if LogLevelInt > 2 {
 		message := fmt.Sprintf(format, v...)

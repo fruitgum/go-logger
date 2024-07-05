@@ -61,8 +61,8 @@ func main() {
 * `debug` - will suppress nothing
 * `info` - will suppress debug messages
 * `warn` - will suppress info and debug messages
-* `fatal` or `error` - will suppress info, warn and debug messages
-* `minimal` - will suppress all messages except System, Success and Fatal 
+* `error` - will suppress info, warn and debug messages
+* `fatal` - will suppress all messages except System, Success and Fatal
 * `none` - will suppress everything
 
 > [!IMPORTANT]
