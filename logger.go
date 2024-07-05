@@ -33,7 +33,7 @@ var (
 //
 // and sets log level according to given parameter
 //
-// # Returns given parameter sting
+// Returns given parameter sting
 //
 // logLevel default value is info
 func SetLogLevel(logLevel string) string {
@@ -63,7 +63,7 @@ func HelpUsage() string {
 
 // Success Printing message with format
 //
-//	01/01/1970 00:00:00 [OK] string
+//	#### 01/01/1970 00:00:00 [OK] string
 //
 // Suppressing if log level set to none or fatal
 func Success(format string, v ...interface{}) {
@@ -85,9 +85,9 @@ func System(format string, v ...interface{}) {
 
 // Fatal Printing message with format
 //
-//	01/01/1970 00:00:00 [FATAL] string and terminating process
+//	#### 01/01/1970 00:00:00 [FATAL] string and terminating process
 //
-// # Suppressing if log level set to none
+// Suppressing if log level set to none
 //
 // Will terminate process even if its output is suppressed
 func Fatal(format string, v ...interface{}) {
@@ -100,7 +100,7 @@ func Fatal(format string, v ...interface{}) {
 
 // Error Printing message with format
 //
-//	01/01/1970 00:00:00 [ERROR] string but not terminating process
+//	#### 01/01/1970 00:00:00 [ERROR] string but not terminating process
 //
 // Suppressing if log level set to fatal or none
 func Error(format string, v ...interface{}) {
@@ -112,7 +112,7 @@ func Error(format string, v ...interface{}) {
 
 // Warn Printing message with format
 //
-//	01/01/1970 00:00:00 [WARN] string
+//	#### 01/01/1970 00:00:00 [WARN] string
 //
 // Suppressing if log level set to error, fatal or none
 func Warn(format string, v ...interface{}) {
@@ -124,7 +124,7 @@ func Warn(format string, v ...interface{}) {
 
 // Info Printing message with format
 //
-//	01/01/1970 00:00:00 [INFO] string
+//	#### 01/01/1970 00:00:00 [INFO] string
 //
 // Suppressing if log level set to warn, error, fatal or none
 func Info(format string, v ...interface{}) {
@@ -136,7 +136,7 @@ func Info(format string, v ...interface{}) {
 
 // Debug Printing message with format
 //
-//	01/01/1970 00:00:00 [DEBUG] string
+//	#### 01/01/1970 00:00:00 [DEBUG] string
 //
 // Suppressing if log level is not set to debug
 func Debug(format string, v ...interface{}) {
