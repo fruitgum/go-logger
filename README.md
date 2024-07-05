@@ -2,7 +2,9 @@
 
 Make logs looks readable
 
-![image](https://github.com/fruitgum/logger/assets/31319804/4515612f-55a7-4a5d-afbc-6f8fcc8b8a52)
+![image](https://github.com/fruitgum/logger/assets/31319804/e5426ed2-efa1-470b-92b8-ac98c0a7b2ab)
+
+
 
 ## Usage:
 
