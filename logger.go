@@ -21,7 +21,8 @@ var logLevelMap = map[string]int{
 
 var (
 	LogLevelInt = 3
-	logPrint    = log.New(os.Stdout, "", log.Ldate|log.Ltime)
+	logOut      = os.Stdout
+	logPrint    = log.New(logOut, "", log.Ldate|log.Ltime)
 )
 
 // SetLogLevel accepts one of the following strings:
@@ -62,7 +63,7 @@ func ToFile(dir, logfile string) {
 		Error("Can not open log file %v: %v", filepath.Join(dir, logfile), err)
 	} else {
 		System("Redirect to %v", filepath.Join(dir, logfile))
-		logPrint = log.New(writeTo, "", log.Ldate|log.Ltime)
+		logOut = writeTo
 	}
 }
 
@@ -102,6 +103,33 @@ func HelpUsage() string {
 	return loggerUsage
 }
 
+func writeLog(logColor, prefixStr, message string) {
+	formatedPrefixStr := "[" + prefixStr + "]"
+	var prefix string
+	switch logColor {
+	case "green":
+		prefix = color.GreenString(formatedPrefixStr)
+	case "yellow":
+		prefix = color.YellowString(formatedPrefixStr)
+	case "red":
+		prefix = color.RedString(formatedPrefixStr)
+	case "blue":
+		prefix = color.BlueString(formatedPrefixStr)
+	case "magenta":
+		prefix = color.MagentaString(formatedPrefixStr)
+	case "cyan":
+		prefix = color.CyanString(formatedPrefixStr)
+	case "white":
+		prefix = color.WhiteString(formatedPrefixStr)
+	}
+	if logOut == os.Stdout {
+		logPrint.Println(fmt.Sprintf("%s %s", prefix, message))
+	} else {
+		logPrint.Println(fmt.Sprintf("%s %s", formatedPrefixStr, message))
+	}
+
+}
+
 // Success Printing message with format
 //
 //	01/01/1970 00:00:00 [OK] string
@@ -110,7 +138,8 @@ func HelpUsage() string {
 func Success(format string, v ...interface{}) {
 	if LogLevelInt >= 0 {
 		message := fmt.Sprintf(format, v...)
-		logPrint.Println(fmt.Sprintf("%s %s", color.GreenString("[OK]"), message))
+		//logPrint.Println(fmt.Sprintf("%s %s", color.GreenString("[OK]"), message))
+		writeLog("green", "OK", message)
 	}
 }
 
@@ -120,7 +149,8 @@ func Success(format string, v ...interface{}) {
 func System(format string, v ...interface{}) {
 	if LogLevelInt >= 0 {
 		message := fmt.Sprintf(format, v...)
-		logPrint.Println(fmt.Sprintf("%s %s", color.WhiteString("[SYS]"), message))
+		//logPrint.Println(fmt.Sprintf("%s %s", color.WhiteString("[SYS]"), message))
+		writeLog("white", "SYS", message)
 	}
 }
 
@@ -134,7 +164,8 @@ func System(format string, v ...interface{}) {
 func Fatal(format string, v ...interface{}) {
 	if LogLevelInt > -1 {
 		message := fmt.Sprintf(format, v...)
-		logPrint.Println(fmt.Sprintf("%s %s", color.RedString("[FATAL]"), message))
+		//logPrint.Println(fmt.Sprintf("%s %s", color.RedString("[FATAL]"), message))
+		writeLog("red", "FATAL", message)
 	}
 	os.Exit(1)
 }
@@ -149,7 +180,8 @@ func Fatal(format string, v ...interface{}) {
 func Error(format string, v ...interface{}) {
 	if LogLevelInt > 0 {
 		message := fmt.Sprintf(format, v...)
-		logPrint.Println(fmt.Sprintf("%s %s", color.RedString("[ERROR]"), message))
+		//logPrint.Println(fmt.Sprintf("%s %s", color.RedString("[ERROR]"), message))
+		writeLog("red", "ERROR", message)
 	}
 }
 
@@ -161,7 +193,8 @@ func Error(format string, v ...interface{}) {
 func Warn(format string, v ...interface{}) {
 	if LogLevelInt > 1 {
 		message := fmt.Sprintf(format, v...)
-		logPrint.Println(fmt.Sprintf("%s %s", color.YellowString("[WARN]"), message))
+		//logPrint.Println(fmt.Sprintf("%s %s", color.YellowString("[WARN]"), message))
+		writeLog("yellow", "WARN", message)
 	}
 }
 
@@ -173,7 +206,8 @@ func Warn(format string, v ...interface{}) {
 func Info(format string, v ...interface{}) {
 	if LogLevelInt > 2 {
 		message := fmt.Sprintf(format, v...)
-		logPrint.Println(fmt.Sprintf("%s %s", color.CyanString("[INFO]"), message))
+		//logPrint.Println(fmt.Sprintf("%s %s", color.CyanString("[INFO]"), message))
+		writeLog("cyan", "INFO", message)
 	}
 }
 
@@ -185,6 +219,7 @@ func Info(format string, v ...interface{}) {
 func Debug(format string, v ...interface{}) {
 	if LogLevelInt > 3 {
 		message := fmt.Sprintf(format, v...)
-		logPrint.Println(fmt.Sprintf("%s %s", color.MagentaString("[DEBUG]"), message))
+		//logPrint.Println(fmt.Sprintf("%s %s", color.MagentaString("[DEBUG]"), message))
+		writeLog("magenta", "DEBUG", message)
 	}
 }
