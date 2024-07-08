@@ -51,17 +51,29 @@ func SetLogLevel(logLevel string) string {
 
 }
 
+// ToFile redirects output to defined file
+//
+//	logger.ToFile("dir", "file")
+//
+// If neither dir nor file is set, the logger will create a default file ./logs/*current_date*.log
 func ToFile(dir, logfile string) {
+	writeTo, err := checkLogFile(dir, logfile)
+	if err != nil {
+		Error("Can not open log file %v: %v", filepath.Join(dir, logfile), err)
+	} else {
+		System("Redirect to %v", filepath.Join(dir, logfile))
+		logPrint = log.New(writeTo, "", log.Ldate|log.Ltime)
+	}
+}
+
+func checkLogFile(dir, logfile string) (*os.File, error) {
 	if dir == "" {
 		dir = "logs"
 	}
 
-	_, err := os.ReadDir(dir)
+	err := os.MkdirAll(dir, 0755)
 	if err != nil {
-		err = os.MkdirAll(dir, 0755)
-		if err != nil {
-			return
-		}
+		return nil, err
 	}
 
 	if logfile == "" {
@@ -70,13 +82,11 @@ func ToFile(dir, logfile string) {
 
 	file := filepath.Join(dir, logfile)
 
-	_, err = os.ReadFile(logfile)
+	writeTo, err := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
-		os.Create(file)
+		return nil, err
 	}
-
-	writeTo, _ := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	log.SetOutput(writeTo)
+	return writeTo, nil
 
 }
 
@@ -116,7 +126,7 @@ func System(format string, v ...interface{}) {
 
 // Fatal Printing message with format
 //
-//	01/01/1970 00:00:00 [FATAL] string and terminating process
+//	01/01/1970 00:00:00 [FATAL] string
 //
 // # Suppressing if log level set to none
 //
@@ -131,9 +141,11 @@ func Fatal(format string, v ...interface{}) {
 
 // Error Printing message with format
 //
-//	01/01/1970 00:00:00 [ERROR] string but not terminating process
+//	01/01/1970 00:00:00 [ERROR] string
 //
-// Suppressing if log level set to fatal or none
+// # Suppressing if log level set to fatal or none
+//
+// Won't terminate process
 func Error(format string, v ...interface{}) {
 	if LogLevelInt > 0 {
 		message := fmt.Sprintf(format, v...)
