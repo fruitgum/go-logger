@@ -62,7 +62,7 @@ func ToFile(dir, logfile string) {
 	if err != nil {
 		Error("Can not open log file %v: %v", filepath.Join(dir, logfile), err)
 	} else {
-		System("Redirect to %v", filepath.Join(dir, logfile))
+		System("Redirect to %v", writeTo.Name())
 		logOut = writeTo
 	}
 }
