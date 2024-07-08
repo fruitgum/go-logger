@@ -106,23 +106,24 @@ func HelpUsage() string {
 func writeLog(logColor, prefixStr, message string) {
 	formatedPrefixStr := "[" + prefixStr + "]"
 	var prefix string
-	switch logColor {
-	case "green":
-		prefix = color.GreenString(formatedPrefixStr)
-	case "yellow":
-		prefix = color.YellowString(formatedPrefixStr)
-	case "red":
-		prefix = color.RedString(formatedPrefixStr)
-	case "blue":
-		prefix = color.BlueString(formatedPrefixStr)
-	case "magenta":
-		prefix = color.MagentaString(formatedPrefixStr)
-	case "cyan":
-		prefix = color.CyanString(formatedPrefixStr)
-	case "white":
-		prefix = color.WhiteString(formatedPrefixStr)
-	}
+
 	if logOut == os.Stdout {
+		switch logColor {
+		case "green":
+			prefix = fmt.Sprintf(color.GreenString(formatedPrefixStr))
+		case "yellow":
+			prefix = fmt.Sprintf(color.YellowString(formatedPrefixStr))
+		case "red":
+			prefix = fmt.Sprintf(color.RedString(formatedPrefixStr))
+		case "blue":
+			prefix = fmt.Sprintf(color.BlueString(formatedPrefixStr))
+		case "magenta":
+			prefix = fmt.Sprintf(color.MagentaString(formatedPrefixStr))
+		case "cyan":
+			prefix = fmt.Sprintf(color.CyanString(formatedPrefixStr))
+		case "white":
+			prefix = fmt.Sprintf(color.WhiteString(formatedPrefixStr))
+		}
 		logPrint.Println(fmt.Sprintf("%s %s", prefix, message))
 	} else {
 		logPrint.Println(fmt.Sprintf("%s %s", formatedPrefixStr, message))
