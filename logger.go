@@ -5,7 +5,9 @@ import (
 	"github.com/fatih/color"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
+	"time"
 )
 
 var logLevelMap = map[string]int{
@@ -33,7 +35,7 @@ var (
 //
 // and sets log level according to given parameter
 //
-// Returns given parameter sting
+// # Returns given parameter sting
 //
 // logLevel default value is info
 func SetLogLevel(logLevel string) string {
@@ -46,6 +48,35 @@ func SetLogLevel(logLevel string) string {
 		LogLevelInt = logLevelMap["info"]
 		return "info"
 	}
+
+}
+
+func ToFile(dir, logfile string) {
+	if dir == "" {
+		dir = "logs"
+	}
+
+	_, err := os.ReadDir(dir)
+	if err != nil {
+		err = os.MkdirAll(dir, 0755)
+		if err != nil {
+			return
+		}
+	}
+
+	if logfile == "" {
+		logfile = time.Now().Format("2006-01-02") + ".log"
+	}
+
+	file := filepath.Join(dir, logfile)
+
+	_, err = os.ReadFile(logfile)
+	if err != nil {
+		os.Create(file)
+	}
+
+	writeTo, _ := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	log.SetOutput(writeTo)
 
 }
 
@@ -87,7 +118,7 @@ func System(format string, v ...interface{}) {
 //
 //	01/01/1970 00:00:00 [FATAL] string and terminating process
 //
-// Suppressing if log level set to none
+// # Suppressing if log level set to none
 //
 // Will terminate process even if its output is suppressed
 func Fatal(format string, v ...interface{}) {
