@@ -21,8 +21,8 @@ var logLevelMap = map[string]int{
 
 var (
 	LogLevelInt = 3
-	logOut      = os.Stdout
-	logPrint    = log.New(logOut, "", log.Ldate|log.Ltime)
+	logToFile   = false
+	logPrint    = log.New(os.Stdout, "", log.Ldate|log.Ltime)
 )
 
 // SetLogLevel accepts one of the following strings:
@@ -58,12 +58,14 @@ func SetLogLevel(logLevel string) string {
 //
 // If neither dir nor file is set, the logger will create a default file ./logs/*current_date*.log
 func ToFile(dir, logfile string) {
+
 	writeTo, err := checkLogFile(dir, logfile)
 	if err != nil {
 		Error("Can not open log file %v: %v", filepath.Join(dir, logfile), err)
 	} else {
 		System("Redirect to %v", writeTo.Name())
-		logOut = writeTo
+		logToFile = true
+		logPrint = log.New(writeTo, "", log.Ldate|log.Ltime)
 	}
 }
 
@@ -83,7 +85,7 @@ func checkLogFile(dir, logfile string) (*os.File, error) {
 
 	file := filepath.Join(dir, logfile)
 
-	writeTo, err := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	writeTo, err := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0666)
 	if err != nil {
 		return nil, err
 	}
@@ -103,11 +105,10 @@ func HelpUsage() string {
 	return loggerUsage
 }
 
-func writeLog(logColor, prefixStr, message string) {
+func writeLog(logColor, prefixStr, message string) string {
 	formatedPrefixStr := "[" + prefixStr + "]"
-	var prefix string
-
-	if logOut == os.Stdout {
+	if !logToFile {
+		var prefix string
 		switch logColor {
 		case "green":
 			prefix = fmt.Sprintf(color.GreenString(formatedPrefixStr))
@@ -124,9 +125,9 @@ func writeLog(logColor, prefixStr, message string) {
 		case "white":
 			prefix = fmt.Sprintf(color.WhiteString(formatedPrefixStr))
 		}
-		logPrint.Println(fmt.Sprintf("%s %s", prefix, message))
+		return prefix
 	} else {
-		logPrint.Println(fmt.Sprintf("%s %s", formatedPrefixStr, message))
+		return formatedPrefixStr
 	}
 
 }
@@ -139,8 +140,8 @@ func writeLog(logColor, prefixStr, message string) {
 func Success(format string, v ...interface{}) {
 	if LogLevelInt >= 0 {
 		message := fmt.Sprintf(format, v...)
-		//logPrint.Println(fmt.Sprintf("%s %s", color.GreenString("[OK]"), message))
-		writeLog("green", "OK", message)
+		formatted := writeLog("green", "OK", message)
+		logPrint.Println(fmt.Sprintf("%s %s", formatted, message))
 	}
 }
 
@@ -150,8 +151,8 @@ func Success(format string, v ...interface{}) {
 func System(format string, v ...interface{}) {
 	if LogLevelInt >= 0 {
 		message := fmt.Sprintf(format, v...)
-		//logPrint.Println(fmt.Sprintf("%s %s", color.WhiteString("[SYS]"), message))
-		writeLog("white", "SYS", message)
+		formatted := writeLog("white", "SYS", message)
+		logPrint.Println(fmt.Sprintf("%s %s", formatted, message))
 	}
 }
 
@@ -165,8 +166,8 @@ func System(format string, v ...interface{}) {
 func Fatal(format string, v ...interface{}) {
 	if LogLevelInt > -1 {
 		message := fmt.Sprintf(format, v...)
-		//logPrint.Println(fmt.Sprintf("%s %s", color.RedString("[FATAL]"), message))
-		writeLog("red", "FATAL", message)
+		formatted := writeLog("red", "FATAL", message)
+		logPrint.Println(fmt.Sprintf("%s %s", formatted, message))
 	}
 	os.Exit(1)
 }
@@ -181,8 +182,8 @@ func Fatal(format string, v ...interface{}) {
 func Error(format string, v ...interface{}) {
 	if LogLevelInt > 0 {
 		message := fmt.Sprintf(format, v...)
-		//logPrint.Println(fmt.Sprintf("%s %s", color.RedString("[ERROR]"), message))
-		writeLog("red", "ERROR", message)
+		formatted := writeLog("red", "ERROR", message)
+		logPrint.Println(fmt.Sprintf("%s %s", formatted, message))
 	}
 }
 
@@ -194,8 +195,8 @@ func Error(format string, v ...interface{}) {
 func Warn(format string, v ...interface{}) {
 	if LogLevelInt > 1 {
 		message := fmt.Sprintf(format, v...)
-		//logPrint.Println(fmt.Sprintf("%s %s", color.YellowString("[WARN]"), message))
-		writeLog("yellow", "WARN", message)
+		formatted := writeLog("yellow", "WARN", message)
+		logPrint.Println(fmt.Sprintf("%s %s", formatted, message))
 	}
 }
 
@@ -207,8 +208,8 @@ func Warn(format string, v ...interface{}) {
 func Info(format string, v ...interface{}) {
 	if LogLevelInt > 2 {
 		message := fmt.Sprintf(format, v...)
-		//logPrint.Println(fmt.Sprintf("%s %s", color.CyanString("[INFO]"), message))
-		writeLog("cyan", "INFO", message)
+		formatted := writeLog("cyan", "INFO", message)
+		logPrint.Println(fmt.Sprintf("%s %s", formatted, message))
 	}
 }
 
@@ -220,7 +221,7 @@ func Info(format string, v ...interface{}) {
 func Debug(format string, v ...interface{}) {
 	if LogLevelInt > 3 {
 		message := fmt.Sprintf(format, v...)
-		//logPrint.Println(fmt.Sprintf("%s %s", color.MagentaString("[DEBUG]"), message))
-		writeLog("magenta", "DEBUG", message)
+		formatted := writeLog("magenta", "DEBUG", message)
+		logPrint.Println(fmt.Sprintf("%s %s", formatted, message))
 	}
 }
