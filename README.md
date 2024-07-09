@@ -15,17 +15,16 @@ import "github.com/fruitgum/go-logger"
 
 func main() {
 
-    	logs := goLogger.New()
+    logs := goLogger.New()
 
-        logs.Success("Success")
-        logs.System("System")
-        logs.Debug("Debug")
-        logs.Info("Info")
-        logs.Warn("Warn")
-        logs.Error("Error")
-        logs.Fatal("Fatal")
+    logs.Success("Success")
+    logs.System("System")
+    logs.Debug("Debug")
+    logs.Info("Info")
+    logs.Warn("Warn")
+    logs.Error("Error")
+    logs.Fatal("Fatal")
     
-
 }
 
 ```
@@ -90,5 +89,5 @@ func main(){
 * `fatal` - will suppress all messages except System, Success and Fatal
 * `none` - will suppress everything
 
-> [!IMPORTANT]
+> [!CAUTION]
 > `goLogger.Fatal` level will terminate process even if its output is suppressed  
