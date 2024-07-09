@@ -32,7 +32,7 @@ func main() {
 
 ### Setting log level
 
-> [!INFO]
+> [!IMPORTANT]
 > Default log level - info
 > If you will not set log level or pass incorrect log level - default log level will be set
 
