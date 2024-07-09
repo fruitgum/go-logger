@@ -1,4 +1,4 @@
-module github.com/fruitgum/gologger
+module github.com/fruitgum/go-logger
 
 go 1.22
 
