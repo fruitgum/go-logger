@@ -2,7 +2,7 @@
 
 Make logs looks readable
 
-![image](https://github.com/fruitgum/logger/assets/31319804/e5426ed2-efa1-470b-92b8-ac98c0a7b2ab)
+![image](https://github.com/fruitgum/go-logger/assets/31319804/cbe8ff0e-8380-44bd-af52-24a181886a98)
 
 
 
@@ -11,52 +11,77 @@ Make logs looks readable
 ```
 package main
 
-import "github.com/fruitgum/logger"
+import "github.com/fruitgum/go-logger"
 
 func main() {
 
-    logger.System("This is System message") //white
-    logger.Debug("This is Debug message") //magenta
-    logger.Info("This is Info message") //Cyan
-    logger.Success("This is Success message") //Green
-    logger.Warn("This is Warn message") //Yellow
-    logger.Error("This is Error message") //Red
-    logger.Fatal("This is Fatal message") //Red, terminates process
+    	logs := goLogger.New()
+
+        logs.Success("Success")
+        logs.System("System")
+        logs.Debug("Debug")
+        logs.Info("Info")
+        logs.Warn("Warn")
+        logs.Error("Error")
+        logs.Fatal("Fatal")
     
 
 }
+
 ```
 
-#### You can also switch log levels
+### Setting log level
+
+> [!INFO]
+> Default log level - info
+> If you will not set log level or pass incorrect log level - default log level will be set
+
 ```
 package main
 
-import "github.com/fruitgum/logger"
+import "github.com/fruitgum/go-logger"
 
-func main() {
+func main(){
 
-    logLevel := flag.String("loglevel", "info", logger.HelpUsage())
-    setLogLevel := logger.SetLogLevel(*logLevel)
-    logger.System("Log level set to %s", setLogLevel)
+    logs := goLogger.New()
+    logs.SetLogLevel("debug")
     
 }
-
 ```
-#### or
+
+### Redirecting output to file
+
+> [!IMPORTANT]
+> ToFile accepts path as argument
+> 
+> If path is not exist - ToFile will try to create it
+> 
+> If path set as "" - ToFile will create directory "logs" next to application
+> 
+> If ToFile won't be able to create path and/or log file - logs will be redirected to stdout as default
+
+
+> [!NOTE]
+> For example you want to store your logs in /tmp/myApp
+> 
+> logs.ToFile("/tmp/myApp")
+> 
+> ToFile will create /tmp/myApp/*current_year*/*current_month*/*current_date*.log and redirect the logs there
+
+
 ```
 package main
 
-import "github.com/fruitgum/logger"
+import "github.com/fruitgum/go-logger"
 
-func main() {
+func main(){
 
-    logLevel := debug
-    setLogLevel := logger.SetLogLevel(logLevel)
-    logger.System("Log level set to %s", setLogLevel)
+    logs := goLogger.New()
+    logs.ToFile("logs")
     
 }
-
 ```
+
 ### Available levels you can set:
 * `debug` - will suppress nothing
 * `info` - will suppress debug messages
