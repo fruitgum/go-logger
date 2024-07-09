@@ -91,4 +91,4 @@ func main(){
 * `none` - will suppress everything
 
 > [!IMPORTANT]
-> `logger.Fatal` level will terminate process even if its output is suppressed  
+> `goLogger.Fatal` level will terminate process even if its output is suppressed  
