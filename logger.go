@@ -21,15 +21,16 @@ var logLevelMap = map[string]int{
 
 type Logger struct {
 	logLevel  int
-	LogOutput io.Writer
-	LogToFile bool
+	logOutput io.Writer
+	logToFile bool
+	logFile   *os.File
 }
 
 func New() *Logger {
 	var logger Logger
 	logger.logLevel = 3
-	logger.LogToFile = false
-	logger.LogOutput = os.Stdout
+	logger.logToFile = false
+	logger.logOutput = os.Stdout
 	return &logger
 }
 
@@ -77,8 +78,9 @@ func (s *Logger) ToFile(dir string) {
 	if err != nil {
 		fmt.Println("file:", err)
 	}
-	s.LogToFile = true
-	s.LogOutput = file
+	s.logToFile = true
+	s.logFile = file
+	s.logOutput = file
 
 }
 
@@ -88,8 +90,8 @@ func LogMessage(logPrefix, logMessage string, s *Logger, messageLogLevel int) {
 		return
 	}
 
-	logToFile := s.LogToFile
-	logOutput := s.LogOutput
+	logToFile := s.logToFile
+	logOutput := s.logOutput
 
 	logMessage = fmt.Sprintf("%s   %s", logPrefix, logMessage)
 	logTimeStamp := time.Now().Format("2006-01-02 15:04:05")
@@ -100,6 +102,9 @@ func LogMessage(logPrefix, logMessage string, s *Logger, messageLogLevel int) {
 		if err != nil {
 			fmt.Println("Error writing to file:", err)
 		}
+		if logPrefix == "[FATAL]" {
+			s.logFile.Close()
+		}
 	} else {
 		fmt.Println(logRow)
 	}
@@ -108,7 +113,7 @@ func LogMessage(logPrefix, logMessage string, s *Logger, messageLogLevel int) {
 
 func (s *Logger) Debug(format string, v ...interface{}) {
 	minLogLevel := 4
-	color.NoColor = s.LogToFile
+	color.NoColor = s.logToFile
 	logMessage := fmt.Sprintf(format, v...)
 	logPrefix := fmt.Sprintf(color.MagentaString("[DBG]"))
 	LogMessage(logPrefix, logMessage, s, minLogLevel)
@@ -116,7 +121,7 @@ func (s *Logger) Debug(format string, v ...interface{}) {
 
 func (s *Logger) Info(format string, v ...interface{}) {
 	minLogLevel := 3
-	color.NoColor = s.LogToFile
+	color.NoColor = s.logToFile
 	logMessage := fmt.Sprintf(format, v...)
 	logPrefix := fmt.Sprintf(color.CyanString("[INF]"))
 	LogMessage(logPrefix, logMessage, s, minLogLevel)
@@ -124,7 +129,7 @@ func (s *Logger) Info(format string, v ...interface{}) {
 
 func (s *Logger) Warn(format string, v ...interface{}) {
 	minLogLevel := 2
-	color.NoColor = s.LogToFile
+	color.NoColor = s.logToFile
 	logMessage := fmt.Sprintf(format, v...)
 	logPrefix := fmt.Sprintf(color.YellowString("[WRN]"))
 	LogMessage(logPrefix, logMessage, s, minLogLevel)
@@ -132,7 +137,7 @@ func (s *Logger) Warn(format string, v ...interface{}) {
 
 func (s *Logger) Error(format string, v ...interface{}) {
 	minLogLevel := 1
-	color.NoColor = s.LogToFile
+	color.NoColor = s.logToFile
 	logMessage := fmt.Sprintf(format, v...)
 	logPrefix := fmt.Sprintf(color.RedString("[ERR]"))
 	LogMessage(logPrefix, logMessage, s, minLogLevel)
@@ -141,7 +146,7 @@ func (s *Logger) Error(format string, v ...interface{}) {
 // Fatal will terminate process. Even if its output suppressed
 func (s *Logger) Fatal(format string, v ...interface{}) {
 	minLogLevel := 0
-	color.NoColor = s.LogToFile
+	color.NoColor = s.logToFile
 	logMessage := fmt.Sprintf(format, v...)
 	logPrefix := fmt.Sprintf(color.RedString("[FATAL]"))
 	LogMessage(logPrefix, logMessage, s, minLogLevel)
@@ -150,7 +155,7 @@ func (s *Logger) Fatal(format string, v ...interface{}) {
 
 func (s *Logger) Success(format string, v ...interface{}) {
 	minLogLevel := 0
-	color.NoColor = s.LogToFile
+	color.NoColor = s.logToFile
 	logMessage := fmt.Sprintf(format, v...)
 	logPrefix := fmt.Sprintf(color.GreenString("[OK ]"))
 	LogMessage(logPrefix, logMessage, s, minLogLevel)
@@ -158,7 +163,7 @@ func (s *Logger) Success(format string, v ...interface{}) {
 
 func (s *Logger) System(format string, v ...interface{}) {
 	minLogLevel := 0
-	color.NoColor = s.LogToFile
+	color.NoColor = s.logToFile
 	logMessage := fmt.Sprintf(format, v...)
 	logPrefix := fmt.Sprintf(color.WhiteString("[SYS]"))
 	LogMessage(logPrefix, logMessage, s, minLogLevel)
