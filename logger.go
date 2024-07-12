@@ -73,7 +73,7 @@ func (s *Logger) ToFile(dir string) {
 
 	logFileName := time.Now().Format("2006-01-02") + ".log"
 	logFullPath := filepath.Join(dir, logFileName)
-	file, err := os.OpenFile(logFullPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(logFullPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Println("file:", err)
 	}
