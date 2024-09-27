@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strconv"
 	"time"
 )
 
@@ -52,24 +51,9 @@ func (s *Logger) SetLogLevel(level string) {
 //
 // If dir is not set ("") - it will create "logs" folder next to an app
 func (s *Logger) ToFile(dir string) {
-	subFolderMonth := strconv.Itoa(int(time.Now().Month()))
-	subFolderYear := strconv.Itoa(time.Now().Year())
-
-	if len(subFolderMonth) == 1 {
-		subFolderMonth = "0" + subFolderMonth
-	}
 
 	if dir == "" {
 		dir = "logs"
-	}
-
-	dir = filepath.Join(dir, subFolderYear, subFolderMonth)
-	_, err := os.ReadDir(dir)
-	if err != nil {
-		err = os.MkdirAll(dir, os.ModePerm)
-		if err != nil {
-			fmt.Println("dir:", err)
-		}
 	}
 
 	logFileName := time.Now().Format("2006-01-02") + ".log"
@@ -78,6 +62,7 @@ func (s *Logger) ToFile(dir string) {
 	if err != nil {
 		fmt.Println("file:", err)
 	}
+
 	s.logToFile = true
 	s.logFile = file
 	s.logOutput = file
