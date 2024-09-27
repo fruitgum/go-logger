@@ -56,7 +56,11 @@ func (s *Logger) ToFile(dir string) {
 		dir = "logs"
 	}
 
-	logFileName := time.Now().Format("2006-01-02") + ".log"
+	currentDate := time.Now().Format("2006-01-02")
+	if currentDate != time.Now().Format("2006-01-02") {
+		currentDate = time.Now().Format("2006-01-02")
+	}
+	logFileName := currentDate + ".log"
 	logFullPath := filepath.Join(dir, logFileName)
 	file, err := os.OpenFile(logFullPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
